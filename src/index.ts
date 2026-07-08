@@ -28,17 +28,27 @@ export class MyMCP extends McpAgent<Env> {
       {
         description:
           "The primary gateway to the Enterprise HRMS (Human Resource Management System). " +
-          "Use this tool to read or modify employee records, look up team hierarchies, check leave balances, submit time-off requests, or query onboarding tracking. " +
-          "The tool routes your request to specialized downstream internal modules (e.g., Payroll, LeaveTracker, EmployeeDirectory, Compliance). " +
+          "Use this tool to read, look up, modify, or terminate employee records, pull company holiday calendars, " +
+          "query corporate leave/working hour policies, manage employee time-off request lifecycles (apply, update status), " +
+          "and search or filter job applicant tracking pipelines. " +
+          "The tool routes your request to specialized downstream internal modules (e.g., Payroll, LeaveTracker, EmployeeDirectory, ApplicantTracking, Onboarding). " +
           "IMPORTANT: For compound or relative queries (e.g., 'Compare Sarah's remaining leave balance with the team average'), " +
           "execute these sequentially. First, pull Sarah's records, then pull the team directory data, and compute the final output manually.",
         inputSchema: {
           action_category: z
-            .enum(["DIRECTORY_LOOKUP", "LEAVE_MANAGEMENT", "PAYROLL_INFO", "ONBOARDING_COMPLIANCE", "GENERAL_INQUIRY"])
+            .enum([
+              "DIRECTORY_LOOKUP",
+              "LEAVE_MANAGEMENT",
+              "PAYROLL_INFO",
+              "ONBOARDING_OFFBOARDING",
+              "POLICY_AND_CALENDAR",
+              "APPLICANT_TRACKING",
+              "GENERAL_INQUIRY"
+            ])
             .describe("Categorize the core operational bucket of the HR request to optimize internal routing speed."),
           user_message: z
             .string()
-            .describe("The verbatim employee request or query in natural language. Examples: 'How many days of PTO does Alex have left?', 'Update my residential address to 123 Main St.', 'List all direct reports for manager ID 4402'"),
+            .describe("The verbatim employee request or query in natural language. Examples: 'Find job applications for job 1052', 'Change my leave request R123 to next week', 'Offboard employee E009', 'What is our hybrid work policy?'"),
           target_employee_id: z
             .string()
             .optional()

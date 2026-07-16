@@ -79,18 +79,20 @@ export class MyMCP extends McpAgent<Env> {
   }
 
   async init() {
-    // 1. DIRECTORY_LOOKUP -> SL_URL_DIRECTORY using SL_TOKEN_DIRECTORY
+
+    // 1. DIRECTORY_LOOKUP & UPDATE -> SL_URL_DIRECTORY using SL_TOKEN_DIRECTORY
     this.server.registerTool(
       "lookup_employee_directory",
       {
-        description: "Search employee records, look up team hierarchies, manager details, and locate contact information.",
+        description: "Search employee records, look up team hierarchies, manager details, and locate contact information. " +
+                     "This tool also handles requests to modify or update an employee's core profile information, contact numbers, address fields, and work details.",
         inputSchema: z.object(baseInputSchema),
       },
       async ({ user_message, target_employee_id, conversation_history }) => 
         this.forwardToIsolatedPipeline(
           this.env.SL_URL_DIRECTORY, 
           this.env.SL_TOKEN_DIRECTORY, 
-          "DIRECTORY_LOOKUP", 
+          "DIRECTORY_LOOKUP_AND_UPDATE", 
           user_message, 
           target_employee_id, 
           conversation_history
